@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+main{
+    @apply p-4 col-span-3 bg-gradient-to-br from-emerald-900 to-emerald-600 text-center text-white;
+}
+a{
+    @apply hover:underline;
+}
+li a{
+    @apply py-1.5 px-3 bg-white min-w-max block text-black rounded-full hover:cursor-pointer;
+}
