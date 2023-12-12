@@ -3,11 +3,32 @@
 @tailwind utilities;
 
 main{
-    @apply p-4 col-span-3 bg-gradient-to-br from-emerald-900 to-emerald-600 text-center text-white;
+    @apply relative p-4 col-span-3 bg-gradient-to-br from-emerald-900 to-emerald-500 text-center text-white;
+}
+main h1{
+    @apply text-4xl tracking-wider font-bold bg-opacity-30 max-w-md mx-auto mt-24 py-2 rounded-lg bg-white;
 }
 a{
     @apply hover:underline;
 }
 li a{
     @apply py-1.5 px-3 bg-white min-w-max block text-black rounded-full hover:cursor-pointer;
+}
+.login-form{
+    @apply text-xl max-w-md mx-auto bg-white bg-opacity-30 mt-4 p-4 rounded-lg;
+}
+.login-form label{
+    @apply my-4 flex justify-between;
+}
+.login-form input{
+    @apply text-black rounded transition-colors py-0.5 px-1 focus-within:outline-none focus-within:bg-gray-100 border focus-within:border-gray-300;
+}
+.login-form input[type="submit"]{
+    @apply bg-white rounded-md px-3 py-1 cursor-pointer hover:bg-gray-300 hover:border-gray-400;
+}
+.error{
+    @apply absolute inset-x-0 top-2 mx-auto text-xl tracking-wider font-bold bg-opacity-80 max-w-md py-4 pl-12 rounded-lg bg-red-800 opacity-0 animate-drop-down border border-red-900;
+}
+.error .exclamation-mark{
+    @apply absolute left-6 text-4xl inset-y-0 grid place-items-center;
 }
