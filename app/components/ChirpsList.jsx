@@ -1,8 +1,9 @@
 "use client"
 
 import { formatDistanceToNow } from "date-fns";
-import getChirps from "../../firebase/firestore/getChirps";
 import { useEffect, useState } from "react";
+
+import getChirps from "../../firebase/firestore/getChirps";
 
 export default function ChirpsList() {
     const [chirps, setChirps] = useState([])

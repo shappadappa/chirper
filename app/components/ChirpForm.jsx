@@ -1,14 +1,20 @@
 "use client"
 
-import { handleChirpSubmit } from "../actions"
-
 import { useState } from "react"
+
+import addChirp from "@/firebase/firestore/addChirp"
 
 export default function Test() {
   const [msg, setMsg] = useState("")
 
+  const handleSubmit = async(e) =>{
+    e.preventDefault()
+    addChirp(msg.replaceAll("\\n", "\n"))
+    setMsg("")
+  }
+
   return (
-    <form action={handleChirpSubmit} onSubmit={() => setMsg("")} className="bg-white text-black my-2 mx-auto max-w-xl rounded p-2 text-left relative">
+    <form onSubmit={e =>handleSubmit(e)} className="bg-white text-black my-2 mx-auto max-w-xl rounded p-2 text-left relative">
         <span className="absolute top-0 right-0 text-gray-600 text-sm p-0.5">{msg.length}/250</span>
         
         <label className="italic text-gray-600" htmlFor="chirp-msg">What's on your mind?</label>
