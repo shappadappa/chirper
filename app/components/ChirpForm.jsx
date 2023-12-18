@@ -1,11 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import addChirp from "@/firebase/firestore/addChirp"
+import { useAuthContext } from "../context/AuthContext"
+import { useRouter } from "next/navigation"
 
 export default function Test() {
   const [msg, setMsg] = useState("")
+
+  const router = useRouter()
+
+  const {user} = useAuthContext()
+
+  useEffect(() =>{
+    if(!user){
+      router.refresh()
+      router.push("/")
+    }
+  }, [])
 
   const handleSubmit = async(e) =>{
     e.preventDefault()

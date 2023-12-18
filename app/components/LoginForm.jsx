@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import signup from "@/firebase/auth/signup"
 import login from "@/firebase/auth/login"
 import Link from "next/link"
+import { useAuthContext } from "../context/AuthContext"
 
 export default function LoginForm({loggingIn}) {
     const [error, setError] = useState("")
@@ -14,6 +15,15 @@ export default function LoginForm({loggingIn}) {
     const [password, setPassword] = useState("")
 
     const router = useRouter()
+
+    const {user} = useAuthContext()
+
+    useEffect(() =>{
+        if(user){
+            router.refresh()
+            router.push("/")
+        }
+    }, [])
 
     const handleSubmit = async(e) =>{
         setError("")

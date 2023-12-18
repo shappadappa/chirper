@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import NavAccountButton from "./NavAccountButton";
+
 export default function Navbar() {
     return (
         <nav className="grid-span-1 bg-black text-white p-4 text-center">
@@ -11,6 +13,8 @@ export default function Navbar() {
                 <li>
                     <Link href="/#">Profile</Link>
                 </li>
+
+                <NavAccountButton />
             </ul>
         </nav>
     )

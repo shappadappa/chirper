@@ -2,14 +2,25 @@
 
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import getChirps from "../../firebase/firestore/getChirps";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function ChirpsList() {
     const [chirps, setChirps] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
+    const router = useRouter()
+
+    const {user} = useAuthContext()
+
     useEffect(() =>{
+        if(!user){
+            router.refresh()
+            router.push("/login")
+        }
+
         let unsubscribe
 
         const loadChirps = async() =>{
