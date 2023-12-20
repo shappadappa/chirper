@@ -22,7 +22,7 @@ export default function Test() {
 
   const handleSubmit = async(e) =>{
     e.preventDefault()
-    addChirp(msg.replaceAll("\\n", "\n"))
+    addChirp(msg.replaceAll("\\n", "\n"), user.uid)
     setMsg("")
   }
 

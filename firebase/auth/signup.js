@@ -29,7 +29,7 @@ export default async function signup(email, username, password){
         
         user = await createUserWithEmailAndPassword(auth, email, password)
 
-        await setDoc(doc(db, "users", user.user.uid), {username_lowercase: username.toLowerCase(), username, email})
+        await setDoc(doc(db, "users", user.user.uid), {username_lowercase: username.toLowerCase(), username, email, createdAt: new Date()})
     } catch(e){
         switch(e.code.split("auth/") [1]){
             case "weak-password":
