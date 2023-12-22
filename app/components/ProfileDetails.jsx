@@ -53,7 +53,6 @@ export default function ProfileDetails({userUid}) {
         setIconUrl(url)
         setIconPreviewUrl("")
         setError(error)
-        forceUpdate()
     }
 
     useEffect(() =>{
@@ -108,7 +107,7 @@ export default function ProfileDetails({userUid}) {
                             <div className="mt-8 max-w-lg mx-auto">
                                 {!userUid && <ChirpForm/>}
                                 <h3 className="text-2xl font-bold">{!userUid ? "Your" : "User's"} chirps:</h3>
-                                <ChirpsList filters={{userUid: userUid ? userUid : loggedInUser.uid}} />
+                                <ChirpsList filters={{userUid: userUid ? userUid : loggedInUser.uid}} iconUrl={iconUrl} />
                             </div>
                         </>
                     }

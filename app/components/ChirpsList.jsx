@@ -3,17 +3,19 @@
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import getChirps from "../../firebase/firestore/getChirps";
 import getUser from "@/firebase/firestore/getUser";
 import { useAuthContext } from "../context/AuthContext";
-import Link from "next/link";
 import getIcon from "@/firebase/storage/getIcon";
+import deleteChirp from "@/firebase/firestore/deleteChirp";
 
-export default function ChirpsList({filters}) {
+export default function ChirpsList({filters, iconUrl}) {
     const [chirps, setChirps] = useState([])
     const [chirpUsers, setChirpUsers] = useState({})
-    const [isLoading, setIsLoading] = useState(true)
+    const [chirpsLoading, setChirpsLoading] = useState(true)
+    const [usersLoading, setUsersLoading] = useState(true)
 
     const router = useRouter()
 
@@ -29,8 +31,8 @@ export default function ChirpsList({filters}) {
 
         const loadChirps = async() =>{
             unsubscribe = await getChirps(data =>{
-                setIsLoading(true)
                 setChirps(data)
+                setChirpsLoading(false)
             }, filters)
         }
 
@@ -41,6 +43,8 @@ export default function ChirpsList({filters}) {
 
     useEffect(() =>{
         const loadUsers = async() =>{
+            setUsersLoading(true)
+
             let chirpUserData = {}
             if(chirps?.length > 0){
                 for(const userUid of chirps.map(chirp => chirp.userUid)){
@@ -50,19 +54,24 @@ export default function ChirpsList({filters}) {
 
                     chirpUserData [userUid] = {...user, url}
                 }
+
+                setUsersLoading(false)
             }
 
             setChirpUsers(chirpUserData)
-            
-            setIsLoading(false)
         }
 
         loadUsers()
     }, [chirps])
 
+    const handleDelete = async(id) =>{
+        const {error} = await deleteChirp(id)
+        console.error(error)
+    }
+
     return (
         <ul className="mt-8">
-            {isLoading ? 
+            {chirpsLoading ? 
                 <div>Loading...</div>
             :
                 <>
@@ -77,15 +86,21 @@ export default function ChirpsList({filters}) {
                     }
                     
                     {chirps?.map(chirp =>(
-                        <li key={chirp.id} className="bg-white text-black my-2 mx-auto max-w-xl rounded-md p-2 text-left">
-                            <div className="p-2 text-lg font-semibold flex gap-4 place-items-center">
-                                <img className="rounded-full aspect-square border border-gray-500 w-10 h-10" src={chirpUsers [chirp.userUid].url} alt="User's profile picture" />
-                                {chirpUsers [chirp.userUid].username ? 
-                                    <Link href={loggedInUser.uid === chirp.userUid ? "/profile" : `/profile/${chirp.userUid}`}>{chirpUsers [chirp.userUid].username}</Link> 
-                                : 
-                                    "(unknown)"
-                                }
-                            </div>
+                        <li key={chirp.id} className="bg-white text-black my-2 mx-auto max-w-xl rounded-md p-2 text-left relative">
+                            {usersLoading ?
+                                <div className="p-2 text-lg">
+                                    <div className="rounded-full border border-gray-500 w-10 h-10"></div>
+                                </div>
+                            :
+                                <div className="p-2 text-lg font-semibold flex gap-4 place-items-center">
+                                    <img className="rounded-full aspect-square border border-gray-500 w-10 h-10" src={loggedInUser.uid === chirp.userUid && iconUrl ? iconUrl : chirpUsers [chirp.userUid].url} alt="User's profile picture" />
+                                    {chirpUsers [chirp.userUid].username ? 
+                                        <Link href={loggedInUser.uid === chirp.userUid ? "/profile" : `/profile/${chirp.userUid}`}>{chirpUsers [chirp.userUid].username}</Link> 
+                                    : 
+                                        "(unknown)"
+                                    }
+                                </div>
+                            }
 
                             <div className="bg-gradient-to-r from-gray-200 to-transparent rounded-md p-6 relative">
                                 <span className="text-3xl mr-4 text-gray-450 absolute left-1 top-1">❝</span>
@@ -94,6 +109,10 @@ export default function ChirpsList({filters}) {
                             </div>
 
                             <p className="text-sm mt-2">posted {formatDistanceToNow(chirp.createdAt.seconds * 1000, {addSuffix: true})}</p>
+
+                            {chirp.userUid === loggedInUser.uid && (new Date().getTime() - chirp.createdAt.seconds * 1000) / 86400000 < 1 && 
+                                <button onClick={() => handleDelete(chirp.id)} className="absolute bottom-0 right-0 p-1 bg-red-100 hover:bg-red-200 transition-colors rounded-br-md">Delete</button>
+                            }
                         </li>
                     ))}
                 </>
